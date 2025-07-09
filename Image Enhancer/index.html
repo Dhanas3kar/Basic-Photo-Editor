@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title> Image Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+</head>
+<body>
+  <div class="container disable" aria-live="polite">
+    <h2> Image Editor Panel</h2>
+    <div class="wrapper">
+      <div class="editor-panel">
+        <div class="filter">
+          <label class="title">Filters</label>
+          <div class="options" role="group" aria-label="Filter options">
+            <button id="brightness" class="active" aria-pressed="true" title="Adjust Brightness">Brightness</button>
+            <button id="saturation" aria-pressed="false" title="Adjust Saturation">Saturation</button>
+            <button id="inversion" aria-pressed="false" title="Invert Colors">Inversion</button>
+            <button id="grayscale" aria-pressed="false" title="Grayscale">Grayscale</button>
+            <button id="blur" aria-pressed="false" title="Blur">Blur</button>
+            <button id="sepia" aria-pressed="false" title="Sepia">Sepia</button>
+          </div>
+          <div class="slider">
+            <div class="filter-info">
+              <p class="name">Brightness</p>
+              <p class="value">100%</p>
+            </div>
+            <input type="range" value="100" min="0" max="200" aria-label="Filter Range">
+          </div>
+        </div>
+        <div class="rotate">
+          <label class="title">Rotate & Flip</label>
+          <div class="options" role="group" aria-label="Rotate and Flip options">
+            <button id="left" title="Rotate Left"><i class="fa-solid fa-rotate-left"></i></button>
+            <button id="right" title="Rotate Right"><i class="fa-solid fa-rotate-right"></i></button>
+            <button id="horizontal" title="Flip Horizontal"><i class='bx bx-reflect-vertical'></i></button>
+            <button id="vertical" title="Flip Vertical"><i class='bx bx-reflect-horizontal'></i></button>
+          </div>
+        </div>
+        <div class="crop">
+          <label class="title">Crop</label>
+          <button id="crop" title="Crop Image"><i class="fa-solid fa-crop"></i></button>
+        </div>
+      </div>
+      <div class="preview-img" tabindex="0">
+        <img src="image-placeholder.svg" alt="Preview image" id="preview-img">
+        <div class="progress-bar" style="display:none;">
+          <div class="progress"></div>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="reset-filter" title="Reset all filters">Reset Filters</button>
+      <div class="row">
+        <input type="file" class="file-input" accept="image/*" hidden>
+        <button class="choose-img" title="Choose an image">Choose Image</button>
+        <button class="save-img" title="Save the edited image">Save Image</button>
+        <button class="download-pdf" title="Download as PDF"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+        <button class="share-img" title="Share Image"><i class="fa-solid fa-share-nodes"></i> Share</button>
+        <button class="undo-btn" title="Undo (Ctrl+Z)"><i class="fa-solid fa-undo"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for cropping (future extension) -->
+  <div id="crop-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Crop Image</h3>
+      <canvas id="crop-canvas"></canvas>
+      <button id="apply-crop">Apply Crop</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+<footer class="footer">
+  <div class="footer-content">
+    <span>© 2025 Image Editor. All rights reserved.</span>
+    <div class="social-icons">
+      <a href="https://www.linkedin.com/in/dhanasekar-murugesan-a9321731a//" target="_blank" aria-label="LinkedIn">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="https://github.com/Dhanas3kar" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+  </div>
+</footer>
+</html>
