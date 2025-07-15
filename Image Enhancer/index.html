@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <title> Image Editor</title>
+  <title>Image Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css">
@@ -10,7 +10,7 @@
 </head>
 <body>
   <div class="container disable" aria-live="polite">
-    <h2> Image Editor Panel</h2>
+    <h2 class="main-heading">Image Editor Panel</h2>
     <div class="wrapper">
       <div class="editor-panel">
         <div class="filter">
@@ -31,6 +31,7 @@
             <input type="range" value="100" min="0" max="200" aria-label="Filter Range">
           </div>
         </div>
+
         <div class="rotate">
           <label class="title">Rotate & Flip</label>
           <div class="options" role="group" aria-label="Rotate and Flip options">
@@ -40,54 +41,63 @@
             <button id="vertical" title="Flip Vertical"><i class='bx bx-reflect-horizontal'></i></button>
           </div>
         </div>
+
         <div class="crop">
           <label class="title">Crop</label>
           <button id="crop" title="Crop Image"><i class="fa-solid fa-crop"></i></button>
         </div>
       </div>
-      <div class="preview-img" tabindex="0">
+
+      <div class="preview-img" tabindex="0" aria-label="Image preview area">
         <img src="image-placeholder.svg" alt="Preview image" id="preview-img">
-        <div class="progress-bar" style="display:none;">
+        <div class="progress-bar">
           <div class="progress"></div>
         </div>
       </div>
     </div>
+
     <div class="controls">
       <button class="reset-filter" title="Reset all filters">Reset Filters</button>
       <div class="row">
         <input type="file" class="file-input" accept="image/*" hidden>
         <button class="choose-img" title="Choose an image">Choose Image</button>
         <button class="save-img" title="Save the edited image">Save Image</button>
-        <button class="download-pdf" title="Download as PDF"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-        <button class="share-img" title="Share Image"><i class="fa-solid fa-share-nodes"></i> Share</button>
-        <button class="undo-btn" title="Undo (Ctrl+Z)"><i class="fa-solid fa-undo"></i></button>
+        <button class="download-pdf" title="Download as PDF">
+          <i class="fa-solid fa-file-pdf"></i> PDF
+        </button>
+        <button class="share-img" title="Share Image">
+          <i class="fa-solid fa-share-nodes"></i> Share
+        </button>
+        <button class="undo-btn" title="Undo (Ctrl+Z)">
+          <i class="fa-solid fa-undo"></i>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Modal for cropping (future extension) -->
-  <div id="crop-modal" class="modal" style="display:none;">
+  <div id="crop-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close" title="Close crop modal">&times;</span>
       <h3>Crop Image</h3>
       <canvas id="crop-canvas"></canvas>
       <button id="apply-crop">Apply Crop</button>
     </div>
   </div>
 
+  <footer class="footer">
+    <div class="footer-content">
+      <span>Done by Dhanasekar, Let's connect -> </span>
+      <div class="social-icons">
+        <a href="https://www.linkedin.com/in/dhanasekar-murugesan-a9321731a//" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/Dhanas3kar" target="_blank" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
-<footer class="footer">
-  <div class="footer-content">
-    <span>Done by Dhanasekar, Let's connect -> </span>
-    <div class="social-icons">
-      <a href="https://www.linkedin.com/in/dhanasekar-murugesan-a9321731a//" target="_blank" aria-label="LinkedIn">
-        <i class="fab fa-linkedin"></i>
-      </a>
-      <a href="https://github.com/Dhanas3kar" target="_blank" aria-label="GitHub">
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-  </div>
-</footer>
 </html>
