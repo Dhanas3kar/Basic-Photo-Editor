@@ -165,7 +165,7 @@ body::after {
 .editor-panel button,
 .controls button {
   outline: none;
-  height: 40px;
+  height: 50px;
   font-size: 15px;
   color: #bdbfff;
   background: rgba(32, 36, 56, 0.96);
