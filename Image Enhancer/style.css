@@ -1,5 +1,4 @@
-/* === Space Nebula Blue-Purple CSS Masterpiece === */
-/* Google Font: Poppins */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 * {
@@ -9,7 +8,6 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Center everything and apply background */
 body {
   min-height: 100vh;
   min-width: 100vw;
@@ -23,7 +21,7 @@ body {
   transition: background 1s;
 }
 
-/* Animated Starfield Layer */
+
 body::before {
   content: "";
   position: fixed;
@@ -40,7 +38,6 @@ body::before {
   100% { background-position: 800px 1600px; }
 }
 
-/* Nebula Glow Effects */
 body::after {
   content: "";
   position: fixed;
@@ -64,7 +61,7 @@ body::after {
   100% { filter: blur(110px) brightness(1.13); opacity: 1; }
 }
 
-/* Shooting Stars (add .shooting-star divs in HTML for extra effect) */
+
 .shooting-star {
   position: fixed;
   top: 12%;
@@ -94,7 +91,6 @@ body::after {
   }
 }
 
-/* Glassmorphism Container */
 .container {
   width: 850px;
   max-width: 98vw;
@@ -264,7 +260,7 @@ body::after {
   background-color: #4f5bff;
 }
 
-/* Rotate Buttons */
+
 .rotate button {
   font-size: 20px;
   padding: 8px 0;
@@ -280,7 +276,7 @@ body::after {
   text-shadow: 0 0 8px #4f5bff;
 }
 
-/* Preview Image */
+
 .preview-img {
   flex-grow: 1;
   display: flex;
@@ -310,7 +306,7 @@ body::after {
   box-shadow: 0 0 12px #a94fff99;
 }
 
-/* Controls */
+
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -394,7 +390,7 @@ body::after {
   box-shadow: 0 0 14px #a94fff99;
 }
 
-/* Progress Bar Styles */
+
 .progress-bar {
   position: absolute;
   bottom: 10px;
@@ -421,7 +417,7 @@ body::after {
   100% { width: 100%; }
 }
 
-/* Modal Styles */
+
 .modal {
   position: fixed;
   top: 0;
@@ -491,7 +487,7 @@ body::after {
   background: #4f5bff;
 }
 
-/* Responsive & Modern Layout */
+
 @media screen and (max-width: 900px) {
   .container {
     width: 98vw;
@@ -581,16 +577,16 @@ body::after {
 }
 
 .footer .social-icons a:hover {
-  color: #0a66c2; /* LinkedIn blue */
+  color: #0a66c2; 
   text-shadow: 0 0 12px #4f5bff99;
 }
 
 .footer .social-icons a:last-child:hover {
-  color: #333; /* GitHub dark */
+  color: #333; 
   text-shadow: 0 0 12px #a94fff99;
 }
 
-/* Responsive Footer */
+
 @media screen and (max-width: 600px) {
   .footer-content {
     flex-direction: column;
