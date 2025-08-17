@@ -1,5 +1,11 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* --- ENHANCEMENT: Root variables for interactive perspective --- */
+:root {
+  --mouse-x: 50;
+  --mouse-y: 50;
+  --perspective: 1500px; /* How far the user is from the scene */
+}
 
 * {
   margin: 0;
@@ -15,12 +21,13 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden; /* Changed from overflow-x: hidden to prevent scrollbars from 3D transforms */
   background: radial-gradient(ellipse at 60% 40%, #4f5bff 0%, #4f5bff 70%, #a94fff 100%);
   background-color: #1b0033;
   transition: background 1s;
+  /* --- ENHANCEMENT: Create a 3D rendering context --- */
+  perspective: var(--perspective);
 }
-
 
 body::before {
   content: "";
@@ -32,6 +39,9 @@ body::before {
   background-repeat: repeat;
   opacity: 0.22;
   animation: starfield-move 120s linear infinite;
+  /* --- ENHANCEMENT: Prepare for parallax effect --- */
+  transition: transform 0.2s ease-out;
+  transform: translateZ(-200px); /* Push stars far back */
 }
 @keyframes starfield-move {
   0% { background-position: 0 0; }
@@ -55,6 +65,9 @@ body::after {
   filter: blur(70px);
   opacity: 0.85;
   animation: nebulaGlow 16s ease-in-out infinite alternate;
+  /* --- ENHANCEMENT: Prepare for parallax effect --- */
+  transition: transform 0.2s ease-out;
+  transform: translateZ(-100px); /* Place nebula behind the main container */
 }
 @keyframes nebulaGlow {
   0% { filter: blur(70px) brightness(1); opacity: 0.8; }
@@ -102,10 +115,40 @@ body::after {
   position: relative;
   z-index: 3;
   backdrop-filter: blur(8px);
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.4s ease-out, transform 0.2s ease-out; /* Enhanced transition */
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  /* --- ENHANCEMENT: Apply 3D transforms based on mouse position --- */
+  transform-style: preserve-3d;
+  transform: rotateY(calc((var(--mouse-x) - 50) / 50 * -8deg)) 
+             rotateX(calc((var(--mouse-y) - 50) / 50 * 8deg))
+             translateZ(50px); /* Lift the container slightly */
+}
+
+/* --- ENHANCEMENT: Add a dynamic glare effect --- */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    background: radial-gradient(
+        circle at calc(var(--mouse-x) * 1%) calc(var(--mouse-y) * 1%),
+        rgba(255, 255, 255, 0.15),
+        rgba(255, 255, 255, 0) 40%
+    );
+    opacity: 0.7;
+    transition: opacity 0.3s, background 0.3s;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.container:hover {
+  box-shadow: 0 16px 64px 0 rgba(31, 38, 135, 0.5);
 }
 
 .container.disable .editor-panel,
@@ -123,6 +166,8 @@ body::after {
   letter-spacing: 2px;
   text-shadow: 0 0 12px #4f5bff, 0 0 2px #fff;
   margin-bottom: 10px;
+  /* --- ENHANCEMENT: Bring title forward in 3D space --- */
+  transform: translateZ(40px);
 }
 
 .wrapper {
@@ -131,6 +176,9 @@ body::after {
   min-height: 335px;
   gap: 20px;
   width: 100%;
+  /* --- ENHANCEMENT: Prepare wrapper for 3D elements --- */
+  transform-style: preserve-3d;
+  transform: translateZ(20px);
 }
 
 .editor-panel {
@@ -143,6 +191,8 @@ body::after {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  /* --- ENHANCEMENT: Give the panel its own depth --- */
+  transform: translateZ(30px);
 }
 
 .editor-panel .title {
@@ -168,7 +218,8 @@ body::after {
   border-radius: 5px;
   border: 1.5px solid #3747c1;
   box-shadow: 0 0 8px #2b2f5c88;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  /* --- ENHANCEMENT: Add transform to the transition --- */
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s ease-out;
   letter-spacing: 1px;
   cursor: pointer;
   margin-bottom: 8px;
@@ -190,6 +241,8 @@ body::after {
   color: #fff;
   border-color: #bdbfff;
   box-shadow: 0 0 16px #4f5bff99;
+  /* --- ENHANCEMENT: Make buttons pop out on hover/focus --- */
+  transform: translateZ(25px) scale(1.05);
 }
 
 .filter button.active {
@@ -197,6 +250,8 @@ body::after {
   border-color: #a9bfff;
   background: linear-gradient(90deg, #4f5bff 0%, #a94fff 100%);
   box-shadow: 0 0 24px #4f5bff88;
+  /* --- ENHANCEMENT: Make active button pop even more --- */
+  transform: translateZ(35px) scale(1.08);
 }
 
 .filter .slider {
@@ -236,13 +291,14 @@ body::after {
   background: #a94fff;
   cursor: pointer;
   box-shadow: 0 0 12px #a94fffcc;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform */
   border: 2px solid #4f5bff;
   margin-top: -7px;
 }
 
 .filter .slider input[type=range]::-webkit-slider-thumb:hover {
   background-color: #4f5bff;
+  transform: scale(1.1); /* --- ENHANCEMENT --- */
 }
 
 .filter .slider input[type=range]::-moz-range-thumb {
@@ -253,13 +309,13 @@ body::after {
   cursor: pointer;
   box-shadow: 0 0 12px #a94fffcc;
   border: 2px solid #4f5bff;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform */
 }
 
 .filter .slider input[type=range]::-moz-range-thumb:hover {
   background-color: #4f5bff;
+  transform: scale(1.1); /* --- ENHANCEMENT --- */
 }
-
 
 .rotate button {
   font-size: 20px;
@@ -269,13 +325,12 @@ body::after {
 
 .rotate button i {
   color: #bdbfff;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease; /* Added text-shadow */
 }
 .rotate button:hover i, .rotate button:focus i {
   color: #fff;
   text-shadow: 0 0 8px #4f5bff;
 }
-
 
 .preview-img {
   flex-grow: 1;
@@ -288,6 +343,8 @@ body::after {
   box-shadow: 0 0 24px 0 #2b2f5c44;
   border: 1.5px solid #4f5bff44;
   position: relative;
+  /* --- ENHANCEMENT: Give preview its own depth --- */
+  transform: translateZ(10px);
 }
 
 .preview-img img {
@@ -298,14 +355,19 @@ body::after {
   object-fit: contain;
   border-radius: 18px;
   box-shadow: 0 0 18px #4f5bff22;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.4s ease-out; /* Added transform */
+  /* --- ENHANCEMENT: Slight initial depth for the image itself --- */
+  transform: translateZ(20px);
+}
+
+.preview-img:hover img {
+    transform: translateZ(40px) scale(1.02); /* --- ENHANCEMENT --- */
 }
 
 .preview-img:focus {
   outline: 2px solid #a94fff;
   box-shadow: 0 0 12px #a94fff99;
 }
-
 
 .controls {
   display: flex;
@@ -314,6 +376,8 @@ body::after {
   gap: 10px;
   margin-top: 10px;
   width: 100%;
+  /* --- ENHANCEMENT: Add depth to control group --- */
+  transform: translateZ(20px);
 }
 
 .controls .row {
@@ -390,7 +454,6 @@ body::after {
   box-shadow: 0 0 14px #a94fff99;
 }
 
-
 .progress-bar {
   position: absolute;
   bottom: 10px;
@@ -403,6 +466,7 @@ body::after {
   box-shadow: 0 0 8px #4f5bff88;
   display: none;
   z-index: 10;
+  transform: translateZ(10px); /* --- ENHANCEMENT --- */
 }
 .progress-bar .progress {
   height: 100%;
@@ -416,7 +480,6 @@ body::after {
   0% { width: 0%; }
   100% { width: 100%; }
 }
-
 
 .modal {
   position: fixed;
@@ -487,52 +550,7 @@ body::after {
   background: #4f5bff;
 }
 
-
-@media screen and (max-width: 900px) {
-  .container {
-    width: 98vw;
-    padding: 20px;
-  }
-  .wrapper {
-    flex-direction: column;
-  }
-  .wrapper .preview-img img {
-    max-width: 90vw;
-  }
-}
-@media screen and (max-width: 760px) {
-  .container {
-    padding: 15px;
-    width: 98vw;
-  }
-  .container .wrapper {
-    flex-wrap: wrap-reverse;
-  }
-  .wrapper .editor-panel {
-    width: 100%;
-    margin-bottom: 18px;
-  }
-  .wrapper .preview-img {
-    width: 100%;
-    margin: 0 0 15px;
-  }
-}
-@media screen and (max-width: 500px) {
-  .controls button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  .controls .row {
-    width: 100%;
-  }
-  .controls .row .save-img {
-    margin-left: 0px;
-  }
-  .container {
-    padding: 5px;
-  }
-}
-
+/* Footer position is unchanged, but it remains flat while the container tilts */
 .footer {
   width: 100vw;
   background: rgba(24, 28, 44, 0.92);
@@ -587,6 +605,53 @@ body::after {
 }
 
 
+/* Media queries remain largely the same, but the 3D effect will be less pronounced on smaller screens */
+@media screen and (max-width: 900px) {
+  .container {
+    width: 98vw;
+    padding: 20px;
+    /* --- ENHANCEMENT: Reduce 3D effect on smaller screens --- */
+    transform: translateZ(20px);
+  }
+  .wrapper {
+    flex-direction: column;
+  }
+  .wrapper .preview-img img {
+    max-width: 90vw;
+  }
+}
+@media screen and (max-width: 760px) {
+  .container {
+    padding: 15px;
+    width: 98vw;
+  }
+  .container .wrapper {
+    flex-wrap: wrap-reverse;
+  }
+  .wrapper .editor-panel {
+    width: 100%;
+    margin-bottom: 18px;
+  }
+  .wrapper .preview-img {
+    width: 100%;
+    margin: 0 0 15px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .controls button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .controls .row {
+    width: 100%;
+  }
+  .controls .row .save-img {
+    margin-left: 0px;
+  }
+  .container {
+    padding: 5px;
+  }
+}
 @media screen and (max-width: 600px) {
   .footer-content {
     flex-direction: column;

@@ -24,7 +24,9 @@ function saveHistory() {
     rotate, flipHorizontal, flipVertical,
     src: previewImg.src
   });
-  if (history.length > 50) history.shift();
+  if (history.length > 50) {
+    history.shift();
+  }
   redoStack = [];
 }
 
