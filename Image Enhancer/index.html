@@ -7,6 +7,63 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+  <!-- Inline CSS for additional styles to make it robust -->
+  <style>
+    /* Additional styles for new features */
+    .editor-panel .adjustments { margin-top: 20px; }
+    .editor-panel .adjustments .title { font-weight: bold; }
+    .editor-panel .adjustments .options button { margin: 5px; padding: 8px; }
+    .editor-panel .drawing-tools { margin-top: 20px; }
+    .editor-panel .drawing-tools .title { font-weight: bold; }
+    .editor-panel .drawing-tools .options button { margin: 5px; padding: 8px; }
+    .editor-panel .text-tools { margin-top: 20px; }
+    .editor-panel .text-tools .title { font-weight: bold; }
+    .editor-panel .text-tools input { margin: 5px; }
+    .editor-panel .shapes { margin-top: 20px; }
+    .editor-panel .shapes .title { font-weight: bold; }
+    .editor-panel .shapes .options button { margin: 5px; padding: 8px; }
+    .layers-panel { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
+    .layers-panel .title { font-weight: bold; }
+    .layers-panel ul { list-style: none; padding: 0; }
+    .layers-panel li { margin: 5px 0; padding: 5px; background: #f0f0f0; }
+    .preview-controls { display: flex; justify-content: space-around; margin-top: 10px; }
+    .preview-controls button { padding: 8px; }
+    .export-options { margin-top: 10px; }
+    .export-options select { margin-right: 10px; }
+    .help-section { margin-top: 20px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; }
+    .help-section h4 { margin-bottom: 10px; }
+    .help-section ul { list-style: disc; padding-left: 20px; }
+    .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+    .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; }
+    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+    .close:hover, .close:focus { color: black; text-decoration: none; cursor: pointer; }
+    .color-picker { margin: 10px 0; }
+    .color-picker input[type="color"] { width: 50px; height: 30px; }
+    .font-selector { margin: 10px 0; }
+    .font-selector select { width: 150px; }
+    .size-slider { margin: 10px 0; }
+    .progress-bar { width: 100%; background: #ddd; height: 5px; margin-top: 10px; }
+    .progress { width: 0%; height: 100%; background: #4caf50; transition: width 0.3s; }
+    /* More styles for robustness */
+    .container { max-width: 1200px; margin: auto; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .wrapper { display: flex; gap: 20px; }
+    .editor-panel { flex: 1; max-width: 300px; }
+    .preview-img { flex: 3; position: relative; }
+    .preview-img img { max-width: 100%; height: auto; display: block; }
+    .controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+    .controls .row { display: flex; gap: 10px; }
+    .footer { margin-top: 20px; text-align: center; }
+    .social-icons a { margin: 0 5px; color: #333; }
+    /* Accessibility improvements */
+    button:focus, input:focus { outline: 2px solid #007bff; }
+    /* Error message styling */
+    .error-message { color: red; margin-top: 10px; display: none; }
+    /* Loading spinner */
+    .loading-spinner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    /* Tooltips */
+    [title]:hover::after { content: attr(title); position: absolute; background: #333; color: #fff; padding: 5px; border-radius: 3px; font-size: 12px; white-space: nowrap; }
+  </style>
 </head>
 <body>
   <div class="container disable" aria-live="polite">
@@ -22,6 +79,12 @@
             <button id="grayscale" aria-pressed="false" title="Grayscale">Grayscale</button>
             <button id="blur" aria-pressed="false" title="Blur">Blur</button>
             <button id="sepia" aria-pressed="false" title="Sepia">Sepia</button>
+            <button id="contrast" aria-pressed="false" title="Adjust Contrast">Contrast</button>
+            <button id="hue" aria-pressed="false" title="Adjust Hue">Hue Rotate</button>
+            <button id="opacity" aria-pressed="false" title="Adjust Opacity">Opacity</button>
+            <button id="sharpen" aria-pressed="false" title="Sharpen Image">Sharpen</button>
+            <button id="emboss" aria-pressed="false" title="Emboss Effect">Emboss</button>
+            <button id="vignette" aria-pressed="false" title="Vignette Effect">Vignette</button>
           </div>
           <div class="slider">
             <div class="filter-info">
@@ -29,6 +92,95 @@
               <p class="value">100%</p>
             </div>
             <input type="range" value="100" min="0" max="200" aria-label="Filter Range">
+          </div>
+          <!-- Additional sliders for new filters -->
+          <div class="slider contrast-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Contrast</p>
+              <p class="value">100%</p>
+            </div>
+            <input type="range" value="100" min="0" max="200" aria-label="Contrast Range">
+          </div>
+          <div class="slider hue-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Hue</p>
+              <p class="value">0deg</p>
+            </div>
+            <input type="range" value="0" min="-180" max="180" aria-label="Hue Range">
+          </div>
+          <div class="slider opacity-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Opacity</p>
+              <p class="value">100%</p>
+            </div>
+            <input type="range" value="100" min="0" max="100" aria-label="Opacity Range">
+          </div>
+          <div class="slider sharpen-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Sharpen</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="0" max="10" aria-label="Sharpen Range">
+          </div>
+          <div class="slider emboss-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Emboss</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="0" max="10" aria-label="Emboss Range">
+          </div>
+          <div class="slider vignette-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Vignette</p>
+              <p class="value">0%</p>
+            </div>
+            <input type="range" value="0" min="0" max="100" aria-label="Vignette Range">
+          </div>
+        </div>
+
+        <div class="adjustments">
+          <label class="title">Adjustments</label>
+          <div class="options" role="group" aria-label="Adjustment options">
+            <button id="exposure" aria-pressed="false" title="Adjust Exposure">Exposure</button>
+            <button id="highlights" aria-pressed="false" title="Adjust Highlights">Highlights</button>
+            <button id="shadows" aria-pressed="false" title="Adjust Shadows">Shadows</button>
+            <button id="whites" aria-pressed="false" title="Adjust Whites">Whites</button>
+            <button id="blacks" aria-pressed="false" title="Adjust Blacks">Blacks</button>
+          </div>
+          <div class="slider exposure-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Exposure</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="-100" max="100" aria-label="Exposure Range">
+          </div>
+          <div class="slider highlights-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Highlights</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="-100" max="100" aria-label="Highlights Range">
+          </div>
+          <div class="slider shadows-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Shadows</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="-100" max="100" aria-label="Shadows Range">
+          </div>
+          <div class="slider whites-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Whites</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="-100" max="100" aria-label="Whites Range">
+          </div>
+          <div class="slider blacks-slider" style="display: none;">
+            <div class="filter-info">
+              <p class="name">Blacks</p>
+              <p class="value">0</p>
+            </div>
+            <input type="range" value="0" min="-100" max="100" aria-label="Blacks Range">
           </div>
         </div>
 
@@ -39,20 +191,112 @@
             <button id="right" title="Rotate Right"><i class="fa-solid fa-rotate-right"></i></button>
             <button id="horizontal" title="Flip Horizontal"><i class='bx bx-reflect-vertical'></i></button>
             <button id="vertical" title="Flip Vertical"><i class='bx bx-reflect-horizontal'></i></button>
+            <button id="rotate-90" title="Rotate 90 Degrees">90°</button>
+            <button id="rotate-180" title="Rotate 180 Degrees">180°</button>
           </div>
         </div>
 
         <div class="crop">
-          <label class="title">Crop</label>
+          <label class="title">Crop & Resize</label>
           <button id="crop" title="Crop Image"><i class="fa-solid fa-crop"></i></button>
+          <button id="resize" title="Resize Image"><i class="fa-solid fa-expand"></i></button>
+          <div class="aspect-ratios" style="display: none;">
+            <button id="free" title="Free Crop">Free</button>
+            <button id="1:1" title="1:1 Aspect">1:1</button>
+            <button id="16:9" title="16:9 Aspect">16:9</button>
+            <button id="4:3" title="4:3 Aspect">4:3</button>
+          </div>
+          <div class="resize-options" style="display: none;">
+            <input type="number" id="width" placeholder="Width" aria-label="Resize Width">
+            <input type="number" id="height" placeholder="Height" aria-label="Resize Height">
+            <button id="apply-resize">Apply</button>
+          </div>
+        </div>
+
+        <div class="drawing-tools">
+          <label class="title">Drawing Tools</label>
+          <div class="options" role="group" aria-label="Drawing options">
+            <button id="pen" title="Pen Tool"><i class="fa-solid fa-pen"></i></button>
+            <button id="eraser" title="Eraser Tool"><i class="fa-solid fa-eraser"></i></button>
+            <button id="brush" title="Brush Tool"><i class="fa-solid fa-paint-brush"></i></button>
+          </div>
+          <div class="color-picker">
+            <label for="draw-color">Color:</label>
+            <input type="color" id="draw-color" value="#000000" aria-label="Drawing Color">
+          </div>
+          <div class="size-slider">
+            <label for="brush-size">Size:</label>
+            <input type="range" id="brush-size" value="5" min="1" max="50" aria-label="Brush Size">
+          </div>
+        </div>
+
+        <div class="text-tools">
+          <label class="title">Text Overlay</label>
+          <button id="add-text" title="Add Text"><i class="fa-solid fa-font"></i></button>
+          <div class="text-options" style="display: none;">
+            <input type="text" id="text-input" placeholder="Enter text" aria-label="Text Input">
+            <div class="font-selector">
+              <label for="font-family">Font:</label>
+              <select id="font-family" aria-label="Font Family">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier">Courier</option>
+                <option value="Verdana">Verdana</option>
+              </select>
+            </div>
+            <div class="size-slider">
+              <label for="font-size">Size:</label>
+              <input type="range" id="font-size" value="20" min="10" max="100" aria-label="Font Size">
+            </div>
+            <div class="color-picker">
+              <label for="text-color">Color:</label>
+              <input type="color" id="text-color" value="#000000" aria-label="Text Color">
+            </div>
+            <button id="apply-text">Apply</button>
+          </div>
+        </div>
+
+        <div class="shapes">
+          <label class="title">Shapes</label>
+          <div class="options" role="group" aria-label="Shape options">
+            <button id="rectangle" title="Add Rectangle"><i class="fa-solid fa-square"></i></button>
+            <button id="circle" title="Add Circle"><i class="fa-solid fa-circle"></i></button>
+            <button id="line" title="Add Line"><i class="fa-solid fa-minus"></i></button>
+          </div>
+          <div class="color-picker">
+            <label for="shape-color">Color:</label>
+            <input type="color" id="shape-color" value="#000000" aria-label="Shape Color">
+          </div>
+          <div class="size-slider">
+            <label for="shape-thickness">Thickness:</label>
+            <input type="range" id="shape-thickness" value="2" min="1" max="10" aria-label="Shape Thickness">
+          </div>
+        </div>
+
+        <div class="layers-panel">
+          <label class="title">Layers</label>
+          <ul id="layers-list" aria-label="Layers list">
+            <!-- Layers will be added dynamically -->
+          </ul>
+          <button id="new-layer" title="Add New Layer"><i class="fa-solid fa-plus"></i> New Layer</button>
+          <button id="delete-layer" title="Delete Layer"><i class="fa-solid fa-trash"></i> Delete</button>
+          <button id="merge-layers" title="Merge Layers"><i class="fa-solid fa-compress"></i> Merge</button>
         </div>
       </div>
 
       <div class="preview-img" tabindex="0" aria-label="Image preview area">
         <img src="image-placeholder.svg" alt="Preview image" id="preview-img">
+        <canvas id="drawing-canvas" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
         <div class="progress-bar">
           <div class="progress"></div>
         </div>
+        <div class="loading-spinner"></div>
+        <div class="preview-controls">
+          <button id="zoom-in" title="Zoom In"><i class="fa-solid fa-search-plus"></i></button>
+          <button id="zoom-out" title="Zoom Out"><i class="fa-solid fa-search-minus"></i></button>
+          <button id="full-screen" title="Full Screen"><i class="fa-solid fa-expand"></i></button>
+        </div>
+        <div class="error-message" id="preview-error"></div>
       </div>
     </div>
 
@@ -62,16 +306,38 @@
         <input type="file" class="file-input" accept="image/*" hidden>
         <button class="choose-img" title="Choose an image">Choose Image</button>
         <button class="save-img" title="Save the edited image">Save Image</button>
-        <button class="download-pdf" title="Download as PDF">
-          <i class="fa-solid fa-file-pdf"></i> PDF
-        </button>
+        <div class="export-options">
+          <select id="export-format" aria-label="Export Format">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="pdf">PDF</option>
+          </select>
+          <button class="download-btn" title="Download"><i class="fa-solid fa-download"></i> Download</button>
+        </div>
         <button class="share-img" title="Share Image">
           <i class="fa-solid fa-share-nodes"></i> Share
         </button>
         <button class="undo-btn" title="Undo (Ctrl+Z)">
           <i class="fa-solid fa-undo"></i>
         </button>
+        <button class="redo-btn" title="Redo (Ctrl+Y)">
+          <i class="fa-solid fa-redo"></i>
+        </button>
       </div>
+    </div>
+
+    <div class="help-section">
+      <h4>Help & Tips</h4>
+      <ul>
+        <li>Use filters to adjust image appearance.</li>
+        <li>Rotate and flip for orientation changes.</li>
+        <li>Crop to select specific areas.</li>
+        <li>Draw and add text for annotations.</li>
+        <li>Manage layers for complex edits.</li>
+        <li>Undo/Redo for mistake correction.</li>
+        <li>Export in multiple formats.</li>
+        <li>Keyboard shortcuts: Ctrl+Z (Undo), Ctrl+Y (Redo), Ctrl+S (Save).</li>
+      </ul>
     </div>
   </div>
 
@@ -80,7 +346,40 @@
       <span class="close" title="Close crop modal">&times;</span>
       <h3>Crop Image</h3>
       <canvas id="crop-canvas"></canvas>
+      <div class="aspect-ratios">
+        <button id="crop-free" title="Free Crop">Free</button>
+        <button id="crop-1:1" title="1:1 Aspect">1:1</button>
+        <button id="crop-16:9" title="16:9 Aspect">16:9</button>
+        <button id="crop-4:3" title="4:3 Aspect">4:3</button>
+      </div>
       <button id="apply-crop">Apply Crop</button>
+    </div>
+  </div>
+
+  <div id="resize-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" title="Close resize modal">&times;</span>
+      <h3>Resize Image</h3>
+      <input type="number" id="resize-width" placeholder="Width" aria-label="Resize Width">
+      <input type="number" id="resize-height" placeholder="Height" aria-label="Resize Height">
+      <label><input type="checkbox" id="maintain-aspect" checked> Maintain Aspect Ratio</label>
+      <button id="apply-resize-modal">Apply</button>
+    </div>
+  </div>
+
+  <div id="text-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" title="Close text modal">&times;</span>
+      <h3>Add Text</h3>
+      <input type="text" id="modal-text-input" placeholder="Enter text" aria-label="Text Input">
+      <select id="modal-font-family" aria-label="Font Family">
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier">Courier</option>
+      </select>
+      <input type="range" id="modal-font-size" value="20" min="10" max="100" aria-label="Font Size">
+      <input type="color" id="modal-text-color" value="#000000" aria-label="Text Color">
+      <button id="apply-text-modal">Apply</button>
     </div>
   </div>
 
@@ -94,10 +393,108 @@
         <a href="https://github.com/Dhanas3kar" target="_blank" aria-label="GitHub">
           <i class="fab fa-github"></i>
         </a>
+        <a href="https://twitter.com/Dhanas3kar" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
       </div>
     </div>
   </footer>
 
   <script src="script.js"></script>
+  <!-- Inline JS for basic functionality stubs to make it robust -->
+  <script>
+    // Stub for filter switching
+    document.querySelectorAll('.filter .options button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.slider').forEach(sl => sl.style.display = 'none');
+        const slider = document.querySelector(`.${btn.id}-slider`);
+        if (slider) slider.style.display = 'block';
+        // Apply filter logic here
+      });
+    });
+
+    // Stub for adjustments
+    document.querySelectorAll('.adjustments .options button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.adjustments .slider').forEach(sl => sl.style.display = 'none');
+        const slider = document.querySelector(`.${btn.id}-slider`);
+        if (slider) slider.style.display = 'block';
+        // Apply adjustment logic
+      });
+    });
+
+    // Stub for rotate/flip
+    document.querySelectorAll('.rotate .options button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Rotate or flip image
+      });
+    });
+
+    // Stub for crop modal
+    const cropModal = document.getElementById('crop-modal');
+    document.getElementById('crop').addEventListener('click', () => {
+      cropModal.style.display = 'block';
+    });
+    document.querySelector('#crop-modal .close').addEventListener('click', () => {
+      cropModal.style.display = 'none';
+    });
+
+    // Similar stubs for other modals
+
+    // Stub for drawing
+    const drawingCanvas = document.getElementById('drawing-canvas');
+    // Initialize drawing context, event listeners for mouse down/up/move
+
+    // Stub for undo/redo
+    let history = [];
+    document.querySelector('.undo-btn').addEventListener('click', () => {
+      if (history.length > 0) {
+        // Pop history and apply
+      }
+    });
+
+    // More JS stubs for robustness
+    // Error handling example
+    function showError(message) {
+      document.getElementById('preview-error').textContent = message;
+      document.getElementById('preview-error').style.display = 'block';
+    }
+
+    // Loading spinner
+    function showLoading() {
+      document.querySelector('.loading-spinner').style.display = 'block';
+    }
+    function hideLoading() {
+      document.querySelector('.loading-spinner').style.display = 'none';
+    }
+
+    // File input handling
+    const fileInput = document.querySelector('.file-input');
+    document.querySelector('.choose-img').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+      showLoading();
+      // Load image, handle errors
+      setTimeout(hideLoading, 1000); // Simulated
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'z') {
+        // Undo
+      } else if (e.ctrlKey && e.key === 'y') {
+        // Redo
+      } else if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        // Save
+      }
+    });
+
+    // Accessibility: Focus management
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('focus', () => {
+        // Highlight or announce
+      });
+    });
+  </script>
 </body>
 </html>
